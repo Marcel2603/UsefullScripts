@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 set -e
 
 GRADLE_VERSION="${1:-7.1.1}"
@@ -21,7 +21,7 @@ ln -f -s "${GRADLE_OPT_DIR}/gradle-${GRADLE_VERSION}/bin/gradle" "${BIN_DIR}/gra
 
 rm -rf "$TEMP_DIR"
 
-if [[ "$PATH" == "*$BIN_DIR*" ]]; 
+if [[ "$PATH" == *"$BIN_DIR"* ]]; 
 then
   echo -e "Im finished!You have gradle \n$(gradle -v)"
 else 
