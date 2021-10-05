@@ -36,13 +36,14 @@ function install_dhall() {
   wget -O "dhall.tar.bz2" $DHALL
   wget -O "yaml.tar.bz2" $YAML
   wget -O "lsp.tar.bz2" $LSP
-  tar -xvf "dhall.tar.bz2"
-  tar -xvf "yaml.tar.bz2"
-  tar -xvf "lsp.tar.bz2"
-  move_and_link_file dhall bin/dhall
-  move_and_link_file dhall bin/dhall-to-yaml-ng
-  move_and_link_file dhall bin/yaml-to-dhall
-  move_and_link_file dhall bin/dhall-lsp-server
+  tar -xf "dhall.tar.bz2"
+  tar -xf "yaml.tar.bz2"
+  tar -xf "lsp.tar.bz2"
+  cd bin
+  move_and_link_file dhall dhall
+  move_and_link_file dhall dhall-to-yaml-ng
+  move_and_link_file dhall yaml-to-dhall
+  move_and_link_file dhall dhall-lsp-server
 
   remove_tmp_dir dhall $path
 }
