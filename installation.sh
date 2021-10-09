@@ -49,7 +49,7 @@ function install_dhall() {
 }
 
 function install_minikube() {
-  curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-amd64
+  wget https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 -O minikube
   chmod +x minikube
   move_and_link_file minikube minikube
 }
