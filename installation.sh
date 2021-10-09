@@ -54,6 +54,12 @@ function install_minikube() {
   move_and_link_file minikube minikube
 }
 
+function install_kind() {
+  curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.11.1/kind-linux-amd64
+  chmod +x ./kind 
+  move_and_link_file kind kind
+}
+
 function install_helm() {
   path=$PWD
   create_tmp_dir helm
