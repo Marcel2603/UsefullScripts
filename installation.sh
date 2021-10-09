@@ -54,6 +54,16 @@ function install_minikube() {
   move_and_link_file minikube minikube
 }
 
+function install_helm() {
+  path=$PWD
+  create_tmp_dir helm
+  curl -Lo helm.tar.gz https://get.helm.sh/helm-v3.7.0-linux-amd64.tar.gz
+  tar -xvf helm.tar.gz
+  cd linux-amd64 
+  move_and_link_file helm helm
+  remove_tmp_dir helm $path
+}
+
 function install_docker() {
   sudo apt update
   sudo apt install apt-transport-https ca-certificates curl software-properties-common
