@@ -4,6 +4,7 @@ VERSION=$1
 OPTDIR=~/.local/opt/k9s/bin
 BINFOLDER=~/.local/bin
 BINDIR=$BINFOLDER/k9s
+TEMPDIR=/tmp/k9s
 
 set -e
 
@@ -13,7 +14,9 @@ if [[ -d $OPTDIR ]]; then echo "install k9s in $OPTDIR"; else echo "$OPTDIR does
 
 if [[ -d $BINFOLDER ]]; then echo "install k9s in $BINFOLDER"; else echo "$BINFOLDER does not exists" && mkdir --parents $BINFOLDER; fi
 
-
+mkdir -p $TEMPDIR
+oldPWD=$(pwd)
+cd $TEMPDIR
 URL="https://github.com/derailed/k9s/releases/download/v${VERSION}/k9s_Linux_x86_64.tar.gz"
 echo "$URL"
 wget -q --show-progress "$URL" -O k9s.tar.gz
@@ -26,4 +29,5 @@ if [[ -f $BINDIR ]]; then echo "remove $BINDIR with info:" && ls -la $BINDIR && 
 # link k9s with path
 ln -s "$OPTDIR/k9s" "$BINDIR"
 
-rm README.md LICENSE k9s.tar.gz
+cd "$oldPWD"
+rm -rf $TEMPDIR
