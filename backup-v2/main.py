@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import datetime
+import json
 import os
 import sys
 import tarfile
@@ -21,6 +22,17 @@ client_name = ""
 username = ""
 password = ""
 
+def _load_config():
+    with open("config.json") as configfile:
+        config = json.load(configfile)
+        paths = config["paths"]
+        restore_script = config["restoreScript"]
+        backup_destination = config["backupDestination"]
+    return {
+        'paths': paths,
+        'restore_script': restore_script,
+        'backup_destination': backup_destination
+    }
 
 def backup_files():
     now = datetime.date.today().strftime('%Y_%m_%d')
