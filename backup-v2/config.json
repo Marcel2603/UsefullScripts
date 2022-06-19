@@ -1,7 +1,7 @@
 {
   "backup": {
-    "destination": "/path/to/dest",
-    "paths" : ["Array", "Of", "Files", "/opt/backup/restore.sh"]
+    "destination": "/home/marcel/Documents/Programming/scripts/UsefullScripts/backup-v2",
+    "paths" : ["$HOME/Documents/Programming/scripts/UsefullScripts/backup-v2/Dockerfile"]
   },
   "samba": {
     "enabled": false,

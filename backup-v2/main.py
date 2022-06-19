@@ -13,8 +13,9 @@ restore_script = "/opt/backup/restore.sh"
 
 
 def _load_config():
-    with open("config.json") as configfile:
+    with open("/opt/backup/config.json") as configfile:
         config = json.load(configfile)
+        print(config)
         backup_conf = config["backup"]
         samba_conf = config["samba"]
         return {
@@ -34,7 +35,7 @@ def backup_files():
             destination = os.path.expandvars(path.replace("$HOME/", ""))
             print('Compress {} to {}'.format(file_no_envs, destination))
             tar.add(file_no_envs, arcname=destination)
-    samba_conf = config['samba']
+    samba_conf = config['samba_conf']
     if samba_conf['enabled']:
         sambda_upload(samba_conf, backup_zip)
 

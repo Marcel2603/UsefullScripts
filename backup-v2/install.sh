@@ -15,7 +15,7 @@ Wants=myBackup.timer
 [Service]
 Type=oneshot
 User=$USER_ID
-ExecStart=/opt/backup/test.py
+ExecStart=/opt/backup/main.py
 
 [Install]
 WantedBy=multi-user.target
@@ -30,10 +30,10 @@ sudo mkdir -p $BACKUP_FOLDER
 sudo chown 744 $BACKUP_FOLDER
 cp config.json $BACKUP_FOLDER
 cp *.py $BACKUP_FOLDER
-chmod +x $BACKUP_FOLDER/test.py
+chmod +x $BACKUP_FOLDER/*.py
 cp requirements.txt $BACKUP_FOLDER
 
-pip3 install -r ${BACKUP_FOLDER}/requirements.txt
+sudo pip3 install -r ${BACKUP_FOLDER}/requirements.txt
 sudo cp systemd/myBackup.timer /etc/systemd/system/
 create_service
 sudo systemctl enable myBackup.service
