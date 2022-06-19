@@ -1,0 +1,15 @@
+{
+  "backup": {
+    "destination": "/path/to/dest",
+    "paths" : ["Array", "Of", "Files", "/opt/backup/restore.sh"]
+  },
+  "samba": {
+    "enabled": false,
+    "domain": "",
+    "host": "",
+    "host_name": "",
+    "client_name": "",
+    "username": "",
+    "password": ""
+  }
+}
