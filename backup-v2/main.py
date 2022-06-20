@@ -15,7 +15,6 @@ restore_script = "/opt/backup/restore.sh"
 def _load_config():
     with open("/opt/backup/config.json") as configfile:
         config = json.load(configfile)
-        print(config)
         backup_conf = config["backup"]
         samba_conf = config["samba"]
         return {
@@ -52,7 +51,7 @@ def sambda_upload(sambda_conf, backup_zip):
         sambda_conf["client_name"]
     )
     if sambaCon.ping_host():
-        sambaCon.upload_file("", backup_zip)
+        sambaCon.upload_file(sambda_conf["share_name"], backup_zip)
 
 
 def restore():
