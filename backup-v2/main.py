@@ -35,8 +35,10 @@ def backup_files():
             destination = os.path.expandvars(path.replace("$HOME/", ""))
             print('Compress {} to {}'.format(file_no_envs, destination))
             tar.add(file_no_envs, arcname=destination)
+    print("Backup to local data finished")
     samba_conf = config['samba_conf']
     if samba_conf['enabled']:
+        print("Upload to samba")
         sambda_upload(samba_conf, backup_zip)
 
 
