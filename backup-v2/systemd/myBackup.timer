@@ -1,0 +1,14 @@
+# This timer unit starts the backup process
+#
+
+[Unit]
+Description=Backups sensible data to hard drive
+Requires=myBackup.service
+
+[Timer]
+Unit=myBackup.service
+Persistent=true
+OnCalendar=*-*-* 14:45:00
+
+[Install]
+WantedBy=timers.target

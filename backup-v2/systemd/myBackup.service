@@ -1,0 +1,15 @@
+# This service unit is for creating Backups of the system
+# By Marcel Herhold
+
+[Unit]
+Description=Backups sensible data to hard drive
+Wants=myBackup.timer
+
+[Service]
+Type=oneshot
+User=1210001562
+groud=1210000513
+ExecStart=/opt/backup/main.py
+
+[Install]
+WantedBy=multi-user.target
