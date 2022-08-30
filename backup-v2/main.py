@@ -10,10 +10,11 @@ from samba import SambaConnection
 
 backup_name = "mybackup"
 restore_script = "/opt/backup/restore.sh"
+location_of_config = "/home/f.goehring/backup_config.json"
 
 
 def _load_config():
-    with open("/opt/backup/config.json") as configfile:
+    with open(location_of_config) as configfile:
         config = json.load(configfile)
         backup_conf = config["backup"]
         samba_conf = config["samba"]
@@ -39,6 +40,7 @@ def backup_files():
     if samba_conf['enabled']:
         print("Upload to samba")
         sambda_upload(samba_conf, backup_zip)
+        print("Upload completed")
 
 
 def sambda_upload(sambda_conf, backup_zip):
