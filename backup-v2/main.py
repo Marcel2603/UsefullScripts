@@ -12,7 +12,6 @@ backup_name = "mybackup"
 restore_script = "/opt/backup/restore.sh"
 location_of_config = "/home/f.goehring/backup_config.json"
 maximum_backups = 5
-sambaCon = None
 
 
 def _load_config():
@@ -79,7 +78,6 @@ def samba_delete(file_to_delete):
         samba_conf["password"],
         samba_conf["client_name"],
         samba_conf["share_name"]
-
     )
     return sambaCon.delete(file_to_delete)
 
