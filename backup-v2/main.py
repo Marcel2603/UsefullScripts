@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import datetime
 import json
+import time
 import os
 import sys
 import tarfile
@@ -11,7 +12,7 @@ from samba import SambaConnection
 backup_name = "mybackup"
 restore_script = "/opt/backup/restore.sh"
 location_of_config = "/home/f.goehring/backup_config.json"
-maximum_backups = 5
+maximum_backups = 10
 
 
 def _load_config():
@@ -39,9 +40,7 @@ def backup_files():
     print("Backup to local data finished")
     samba_conf = config['samba_conf']
     if samba_conf['enabled']:
-        print("Upload to samba")
         samba_upload(samba_conf, backup_zip)
-        print("Upload completed")
 
 
 def samba_clear():
@@ -63,8 +62,14 @@ def samba_upload(samba_conf, backup_zip):
         samba_conf["client_name"],
         samba_conf["share_name"]
     )
-    if sambaCon.ping_host():
-        sambaCon.upload_file(samba_conf["share_name"], backup_zip)
+    for x in range(2):
+        if sambaCon.ping_host():
+            print("Upload to samba")
+            sambaCon.upload_file(samba_conf["share_name"], backup_zip)
+            print("Upload completed")
+        else:
+            print("No connection, waiting for try {}...".format(x + 2))
+            time.sleep(10)
 
 
 def samba_delete(file_to_delete):
@@ -79,7 +84,9 @@ def samba_delete(file_to_delete):
         samba_conf["client_name"],
         samba_conf["share_name"]
     )
-    return sambaCon.delete(file_to_delete)
+    if sambaCon.ping_host():
+        print("Delete file {}".format(file_to_delete))
+        return sambaCon.delete(file_to_delete)
 
 
 def samba_list():
@@ -95,7 +102,8 @@ def samba_list():
         samba_conf["share_name"]
 
     )
-    return sambaCon.list()
+    if sambaCon.ping_host():
+        return sambaCon.list()
 
 
 def restore():
