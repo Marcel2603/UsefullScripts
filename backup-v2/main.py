@@ -47,6 +47,8 @@ def samba_clear():
     filenames = samba_list()
     if len(filenames) > maximum_backups + 2:
         samba_delete(filenames[2])
+    else:
+        print("No files to delete")
 
 
 def samba_upload(samba_conf, backup_zip):
@@ -64,9 +66,10 @@ def samba_upload(samba_conf, backup_zip):
             print("Upload to samba")
             sambaCon.upload_file(samba_conf["share_name"], backup_zip)
             print("Upload completed")
+            break
         else:
             print("No connection, waiting for try {}...".format(tries + 2))
-            time.sleep(10)
+            time.sleep(300)
 
 
 def samba_delete(file_to_delete):
