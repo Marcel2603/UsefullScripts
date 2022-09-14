@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import datetime
 import json
+import time
 import os
 import sys
 import tarfile
@@ -11,6 +12,7 @@ from samba import SambaConnection
 backup_name = "mybackup"
 restore_script = "/opt/backup/restore.sh"
 location_of_config = "/home/f.goehring/backup_config.json"
+maximum_backups = 10
 
 
 def _load_config():
@@ -38,22 +40,70 @@ def backup_files():
     print("Backup to local data finished")
     samba_conf = config['samba_conf']
     if samba_conf['enabled']:
-        print("Upload to samba")
-        sambda_upload(samba_conf, backup_zip)
-        print("Upload completed")
+        samba_upload(samba_conf, backup_zip)
 
 
-def sambda_upload(sambda_conf, backup_zip):
+def samba_clear():
+    filenames = samba_list()
+    if len(filenames) > maximum_backups + 2:
+        samba_delete(filenames[2])
+    else:
+        print("No files to delete")
+
+
+def samba_upload(samba_conf, backup_zip):
     sambaCon = SambaConnection(
-        sambda_conf["domain"],
-        sambda_conf["host"],
-        sambda_conf["host_name"],
-        sambda_conf["username"],
-        sambda_conf["password"],
-        sambda_conf["client_name"]
+        samba_conf["domain"],
+        samba_conf["host"],
+        samba_conf["host_name"],
+        samba_conf["username"],
+        samba_conf["password"],
+        samba_conf["client_name"],
+        samba_conf["share_name"]
+    )
+    for tries in range(2):
+        if sambaCon.ping_host():
+            print("Upload to samba")
+            sambaCon.upload_file(samba_conf["share_name"], backup_zip)
+            print("Upload completed")
+            break
+        else:
+            print("No connection, waiting for try {}...".format(tries + 2))
+            time.sleep(300)
+
+
+def samba_delete(file_to_delete):
+    config = _load_config()
+    samba_conf = config['samba_conf']
+    sambaCon = SambaConnection(
+        samba_conf["domain"],
+        samba_conf["host"],
+        samba_conf["host_name"],
+        samba_conf["username"],
+        samba_conf["password"],
+        samba_conf["client_name"],
+        samba_conf["share_name"]
     )
     if sambaCon.ping_host():
-        sambaCon.upload_file(sambda_conf["share_name"], backup_zip)
+        print("Delete file {}".format(file_to_delete))
+        return sambaCon.delete(file_to_delete)
+
+
+def samba_list():
+    config = _load_config()
+    samba_conf = config['samba_conf']
+    sambaCon = SambaConnection(
+        samba_conf["domain"],
+        samba_conf["host"],
+        samba_conf["host_name"],
+        samba_conf["username"],
+        samba_conf["password"],
+        samba_conf["client_name"],
+        samba_conf["share_name"]
+
+    )
+    if sambaCon.ping_host():
+        return sambaCon.list()
 
 
 def restore():
@@ -78,3 +128,4 @@ if __name__ == '__main__':
         restore()
     else:
         backup_files()
+        samba_clear()

@@ -28,7 +28,7 @@ EndOfMessage
 BACKUP_FOLDER=/opt/backup
 sudo mkdir -p $BACKUP_FOLDER
 sudo chown -R $USER_ID:$GROUP_ID $BACKUP_FOLDER
-cp config.json $BACKUP_FOLDER
+cp ~/backup_config.json $BACKUP_FOLDER
 cp *.py $BACKUP_FOLDER
 chmod +x $BACKUP_FOLDER/*.py
 cp requirements.txt $BACKUP_FOLDER
