@@ -27,8 +27,6 @@ def _load_config():
 
 
 def backup_files():
-    config = _load_config()
-    backup_conf = config['backup_conf']
     now = datetime.date.today().strftime('%Y_%m_%d')
     backup_zip = os.path.expandvars(backup_conf['destination'] + str(now) + '_' + backup_name + '.tar.gz')
     with tarfile.open(backup_zip, "w:gz") as tar:
@@ -45,10 +43,25 @@ def backup_files():
 
 def samba_clear():
     filenames = samba_list()
-    if len(filenames) > maximum_backups + 2:
+    while len(filenames) > maximum_backups + 2:
+        filenames = samba_list()
         samba_delete(filenames[2])
     else:
-        print("No files to delete")
+        print("No more remote files to delete")
+
+
+def local_clear():
+    filenames = os.listdir(backup_conf['destination'])
+    filenames.sort()
+    while len(filenames) > maximum_backups + 2:
+        filenames = os.listdir(backup_conf['destination'])
+        filenames.sort()
+        local_delete(filenames[2])
+    print("No more local files to delete")
+
+
+def local_delete(filename):
+    os.remove('{}{}'.format(backup_conf['destination'], filename))
 
 
 def samba_upload(samba_conf, backup_zip):
@@ -73,7 +86,6 @@ def samba_upload(samba_conf, backup_zip):
 
 
 def samba_delete(file_to_delete):
-    config = _load_config()
     samba_conf = config['samba_conf']
     sambaCon = SambaConnection(
         samba_conf["domain"],
@@ -90,7 +102,6 @@ def samba_delete(file_to_delete):
 
 
 def samba_list():
-    config = _load_config()
     samba_conf = config['samba_conf']
     sambaCon = SambaConnection(
         samba_conf["domain"],
@@ -107,8 +118,6 @@ def samba_list():
 
 
 def restore():
-    config = _load_config()
-    backup_conf = config['backup_conf']
     tar_name = input('Pls insert filename (no extension)').replace('.tar', '').replace('.gz', '')
     now = datetime.date.today().strftime('%Y_%m_%d')
     backup_zip = os.path.expandvars(backup_conf['destination'] + str(now) + '_' + tar_name + '.tar.gz')
@@ -121,6 +130,8 @@ def restore():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    config = _load_config()
+    backup_conf = config['backup_conf']
     args = sys.argv
     # args[0] = current file
     # args[1] = function name
@@ -129,3 +140,4 @@ if __name__ == '__main__':
     else:
         backup_files()
         samba_clear()
+        local_clear()

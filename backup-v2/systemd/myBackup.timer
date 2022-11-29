@@ -8,7 +8,7 @@ Requires=myBackup.service
 [Timer]
 Unit=myBackup.service
 Persistent=true
-OnCalendar=*-*-* 14:45:00
+OnCalendar=*-*-* 14:00:00
 
 [Install]
 WantedBy=timers.target
