@@ -28,8 +28,11 @@ def _load_config():
 
 def backup_files():
     now = datetime.date.today().strftime('%Y_%m_%d')
-    backup_zip = os.path.expandvars(backup_conf['destination'] + str(now) + '_' + backup_name + '.tar.gz')
-    with tarfile.open(backup_zip, "w:gz") as tar:
+    path = backup_conf['destination']
+    if not os.path.exists(path):
+        os.makedirs(path)
+    backup_zip = os.path.expandvars(path + str(now) + '_' + backup_name + '.tar.xz')
+    with tarfile.open(backup_zip, "w:xz") as tar:
         for path in backup_conf['paths']:
             file_no_envs = os.path.expandvars(path)
             destination = os.path.expandvars(path.replace("$HOME/", ""))
